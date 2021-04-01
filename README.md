@@ -15,5 +15,7 @@ ansible-playbook ansible_terraform.yml
 
 NOTE***
 ssh user must have passwordless auth and passwordless sudo. 
+
 cloud-init template must already be created
+
 terraform does not create the cloud-init
