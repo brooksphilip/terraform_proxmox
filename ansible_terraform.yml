@@ -1,0 +1,66 @@
+---
+- hosts: localhost
+  name: Create infrastructure with Terraforms
+  vars:
+    terraform_dir: <project_location>
+ 
+  tasks:
+    - name: Terraform Apply
+      terraform:
+        project_path: "{{ terraform_dir }}"
+        state: present
+      register: outputs
+
+    - name: debug
+      debug:
+        msg: "{{ outputs }}"
+ 
+    - name: Create Master Group
+      add_host: 
+        name: "{{ outputs.outputs.init_master_address.value }}"
+        groups: init_master
+
+    - name: Create Worker Group
+      add_host: 
+        name: "{{ outputs.outputs.worker1_address.value }}"
+        groups: workers
+
+    - name: Create Worker Group
+      add_host: 
+        name: "{{ outputs.outputs.worker2_address.value }}"
+        groups: workers
+      
+
+    - name: Create Worker Group
+      add_host: 
+        name: "{{ outputs.outputs.worker3_address.value }}"
+        groups: workers
+
+    - name: debug
+      debug:
+        msg: "{{ groups }}"
+
+- hosts: all
+  name: Install RKE2
+  user: <ssh_user>
+  become: yes
+  gather_facts: false
+ 
+  pre_tasks:
+    - name: Testing Connection
+      wait_for_connection:
+        delay: 60
+        timeout: 600
+
+    - name: Testing
+      debug:
+        msg: "{{ init_master }}"
+
+    - debug:
+        var=hostvars[inventory_hostname]
+
+  roles: 
+    - rke2
+
+
+ 

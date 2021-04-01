@@ -1,0 +1,26 @@
+---
+# /etc/rancher/rke2/config.yaml`
+- name: create the /etc/rancher/rke2 config dir
+  ansible.builtin.file:
+    path: /etc/rancher/rke2
+    state: directory
+    recurse: yes
+
+
+- name: create the airgap images folder
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/agent/images
+    state: directory
+    recurse: yes
+
+    
+- name: Importing agent config
+  ansible.builtin.template:
+    src: ../templates/agent_config.yaml.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: 0600
+
+
+

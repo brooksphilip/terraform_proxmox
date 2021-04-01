@@ -1,0 +1,24 @@
+---
+
+## CIS-Mode 
+# https://docs.rke2.io/security/hardening_guide/
+- name: CONFIG | enable CIS-MODE
+  lineinfile:
+    dest: /etc/rancher/rke2/config.yaml
+    line: "profile: cis-1.5"
+
+# create etcd group
+- name: CIS | create etcd group
+  group:
+    name: etcd
+    state: present
+
+# create etcd user
+- name: CIS | create etcd user
+  user:
+    name: etcd
+    comment: etcd user
+    shell: /bin/nologin
+    group: etcd
+
+
